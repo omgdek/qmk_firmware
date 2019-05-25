@@ -108,7 +108,6 @@ void rgb_matrix_init_user(void);
 #define LED_SCROLL_FUNK1            10
 #define LED_SCROLL_FUNK2            11
 #define LED_SCROLL_MAX_INDEX        12
-#define LED_SCROLL_ALL              13
 
 #define EF_NONE         0x00000000  //No effect
 #define EF_OVER         0x00000001  //Overwrite any previous color information with new
