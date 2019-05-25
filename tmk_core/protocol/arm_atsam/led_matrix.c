@@ -383,7 +383,7 @@ void led_matrix_run(void)
         hundredpcent = 100.0;
 
         switch (led_animation_orientation) {
-          case LED_SCROLL_ALL
+        case LED_SCROLL_ALL:
             po = 0;
             break;
           case LED_SCROLL_HORIZ:
