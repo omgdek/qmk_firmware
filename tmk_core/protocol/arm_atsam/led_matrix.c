@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "arm_atsam_protocol.h"
 #include "tmk_core/common/led.h"
 #include <string.h>
+#include <print.h>
+#include <math.h>
+#include <inttypes.h>
 
 void SERCOM1_0_Handler( void )
 {
@@ -217,6 +220,7 @@ void disp_calc_extents(void)
 
     disp.width = disp.right - disp.left;
     disp.height = disp.top - disp.bottom;
+    disp.max_distance = sqrtf(powf(disp.width, 2) + powf(disp.height, 2));
 }
 
 void disp_pixel_setup(void)
@@ -375,12 +379,56 @@ void led_matrix_run(void)
         go = 0;
         bo = 0;
 
-        if (led_animation_orientation)
-        {
+        float hundredpcent;
+        hundredpcent = 100.0;
+
+        switch (led_animation_orientation) {
+          case LED_SCROLL_ALL
+            po = 0;
+            break;
+          case LED_SCROLL_HORIZ:
+            po = led_cur->px;
+            break;
+          case LED_SCROLL_VERT:
             po = led_cur->py;
-        }
-        else
-        {
+            break;
+          case LED_SCROLL_DIAG:
+            led_animation_direction = 0;
+            po = led_cur->py + led_cur->px;
+            break;
+          case LED_SCROLL_DIAG2:
+            led_animation_direction = 0;
+            po = (led_cur->py / 4) + led_cur->px;  //cool diagnal
+            break;
+          case LED_SCROLL_DIAG3:
+            led_animation_direction = 0;
+            po = fabsf(((hundredpcent - led_cur->py) / 4) + led_cur->px);  //cool opposite diagnal
+            break;
+          case LED_SCROLL_CIRC:
+            po = sqrtf((powf(fabsf((disp.width / 2) - (led_cur->x - disp.left)), 2) + powf(fabsf((disp.height / 2) - (led_cur->y - disp.bottom)), 2))) / disp.max_distance * 100;
+            break;
+          case LED_SCROLL_CENT:
+            po = (disp.right - led_cur->x >= 7.594) ? ((led_cur->py / 6) + ((disp.right - (led_cur->x - disp.left)) * 3)) : (led_cur->py / 6) + (led_cur->x * 3);  //7.594 is middle of spacebar led
+            break;
+          case LED_SCROLL_CENT2:
+            po = (led_cur->px >= 50) ? fabsf(((led_cur->py) / 4) + (hundredpcent - led_cur->px)) : (led_cur->py / 4) + led_cur->px;   //this one does have of keyboard
+            break;
+          case LED_SCROLL_SPLIT:
+            led_animation_direction = 0;
+            po = (disp.right - led_cur->x >= 7.294) ? fabsf(((hundredpcent - led_cur->py) / 4) + (hundredpcent - led_cur->px)) : fabsf((led_cur->py / 4) + (led_cur->px));   //split diagnal shifted left
+            break;
+          case LED_SCROLL_SPLIT2:
+            po = (disp.right - led_cur->x >= 7.594) ? fabsf(((hundredpcent - led_cur->py) / 4) + led_cur->px) : fabsf((led_cur->py / 4) + (hundredpcent - led_cur->px));   //cool no glitching either direction
+            break;
+          case LED_SCROLL_FUNK1:
+            led_animation_direction = 0;
+            po = (disp.right - led_cur->x >= 7.594) ? fabsf(((hundredpcent - led_cur->py) / 4) + led_cur->px) : fabsf((led_cur->py / 4) + led_cur->px);   //roll over diag in middle
+            break;
+          case LED_SCROLL_FUNK2:
+            led_animation_direction = 0;
+            po = (disp.right - led_cur->x >= 7.594) ? fabsf(((hundredpcent - led_cur->py) / 4) + (hundredpcent - led_cur->px)) : fabsf((led_cur->py / 4) + (hundredpcent - led_cur->px));
+            break;
+          default:
             po = led_cur->px;
         }
 

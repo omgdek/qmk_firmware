@@ -83,6 +83,7 @@ typedef struct led_disp_s {
     float bottom;
     float width;
     float height;
+    float max_distance;
 } led_disp_t;
 
 uint8_t led_matrix_init(void);
@@ -93,6 +94,21 @@ void rgb_matrix_init_user(void);
 #define LED_MODE_NON_KEYS_ONLY      2
 #define LED_MODE_INDICATORS_ONLY    3
 #define LED_MODE_MAX_INDEX          LED_MODE_INDICATORS_ONLY   //Must be highest value
+
+#define LED_SCROLL_HORIZ            0
+#define LED_SCROLL_VERT             1
+#define LED_SCROLL_DIAG             2
+#define LED_SCROLL_DIAG2            3
+#define LED_SCROLL_DIAG3            4
+#define LED_SCROLL_CIRC             5
+#define LED_SCROLL_CENT             6
+#define LED_SCROLL_CENT2            7
+#define LED_SCROLL_SPLIT            8
+#define LED_SCROLL_SPLIT2           9
+#define LED_SCROLL_FUNK1            10
+#define LED_SCROLL_FUNK2            11
+#define LED_SCROLL_MAX_INDEX        12
+#define LED_SCROLL_ALL              13
 
 #define EF_NONE         0x00000000  //No effect
 #define EF_OVER         0x00000001  //Overwrite any previous color information with new
